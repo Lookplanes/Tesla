@@ -1,3 +1,4 @@
+#include "stm32f1xx_hal.h"
 #include "screen.h"
 #include "lcd.h"
 #include "key.h"
@@ -10,6 +11,7 @@
 #include "route_planning.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 uint8_t mode = 0; //写注释
 
@@ -36,6 +38,12 @@ static uint16_t ir_px[IR_TRAIL_MAX_POINTS];
 static uint16_t ir_py[IR_TRAIL_MAX_POINTS];
 static uint16_t ir_count = 0;
 
+// === USART2 接收调试（用于验证是否收到 SU7 数据） ===
+static uint32_t ir_rx_bytes = 0;
+static uint32_t ir_rx_lines = 0;
+static uint32_t ir_rx_last_tick = 0;
+static char ir_last_line[64] = {0};
+
 extern UART_HandleTypeDef huart2; // 用于接收 SU7 发送的 $POS,x,y
 
 // 将 cm 坐标映射到屏幕像素（原点在画布左下角，y 轴向上）
@@ -48,39 +56,89 @@ static void IR_MapToCanvas(float x_cm, float y_cm, uint16_t* out_x, uint16_t* ou
     *out_x = px; *out_y = py;
 }
 
-// 接收 "$POS,x,y\n"
+static void IR_Debug_DrawRxStatus(void)
+{
+    static uint32_t last_draw_tick = 0;
+    uint32_t now = HAL_GetTick();
+    if ((now - last_draw_tick) < 200) return;
+    last_draw_tick = now;
+
+    // 底部区域显示，不影响画布与按钮
+    LCD_Fill(10, 250, 310, 279, CYAN);
+    POINT_COLOR = BLACK;
+
+    char l1[64];
+    char l2[64];
+    uint32_t age = (ir_rx_last_tick == 0) ? 0xFFFFFFFFu : (now - ir_rx_last_tick);
+    snprintf(l1, sizeof(l1), "RX bytes:%lu lines:%lu age:%lums", (unsigned long)ir_rx_bytes, (unsigned long)ir_rx_lines, (unsigned long)age);
+    snprintf(l2, sizeof(l2), "Last:%s", ir_last_line[0] ? ir_last_line : "(none)");
+
+    LCD_ShowString(10, 250, 300, 16, 16, (uint8_t*)l1);
+    LCD_ShowString(10, 265, 300, 16, 16, (uint8_t*)l2);
+}
+
+// 接收 "$POS,x,y\n"（浮点）或 "$POSI,x_ccm,y_ccm\n"（整数，0.01cm）
 static void IR_UartPollAndParse(void)
 {
     while (__HAL_UART_GET_FLAG(&huart2, UART_FLAG_RXNE)) {
         uint8_t ch = (uint8_t)(huart2.Instance->DR & 0xFF);
+        ir_rx_bytes++;
+        ir_rx_last_tick = HAL_GetTick();
         static char line[64];
         static uint8_t len = 0;
         if (ch == '\n' || ch == '\r') {
             if (len > 0) {
                 line[len] = '\0';
-                // 期待格式 $POS,x,y
+                // 记录原始行（用于调试显示）
+                strncpy(ir_last_line, line, sizeof(ir_last_line) - 1);
+                ir_last_line[sizeof(ir_last_line) - 1] = '\0';
+                ir_rx_lines++;
+                float x = 0, y = 0;
+                uint8_t ok = 0;
+
                 if (strncmp(line, "$POS,", 5) == 0) {
-                    float x = 0, y = 0;
-                    // 提取两个浮点数
+                    // 浮点协议：$POS,x,y
                     char* p = line + 5;
                     char* comma = strchr(p, ',');
                     if (comma) {
                         *comma = '\0';
-                        x = (float)atof(p);
-                        y = (float)atof(comma + 1);
-                        uint16_t px, py;
-                        IR_MapToCanvas(x, y, &px, &py);
-                        if (ir_count < IR_TRAIL_MAX_POINTS) {
-                            // 画轨迹：连接前后两个点
-                            if (ir_count > 0) {
-                                LCD_DrawLine(ir_px[ir_count - 1], ir_py[ir_count - 1], px, py);
-                            } else {
-                                TP_Draw_Big_Point(px, py, BLUE);
-                            }
-                            ir_px[ir_count] = px;
-                            ir_py[ir_count] = py;
-                            ir_count++;
+                        char* end1 = NULL;
+                        char* end2 = NULL;
+                        x = strtof(p, &end1);
+                        y = strtof(comma + 1, &end2);
+                        ok = (end1 != p) && (end2 != (comma + 1));
+                    }
+                } else if (strncmp(line, "$POSI,", 6) == 0) {
+                    // 整数协议：$POSI,x_ccm,y_ccm（0.01cm）
+                    char* p = line + 6;
+                    char* comma = strchr(p, ',');
+                    if (comma) {
+                        *comma = '\0';
+                        char* end1 = NULL;
+                        char* end2 = NULL;
+                        long x_ccm = strtol(p, &end1, 10);
+                        long y_ccm = strtol(comma + 1, &end2, 10);
+                        if (end1 != p && end2 != (comma + 1)) {
+                            x = (float)x_ccm / 100.0f;
+                            y = (float)y_ccm / 100.0f;
+                            ok = 1;
                         }
+                    }
+                }
+
+                if (ok) {
+                    uint16_t px, py;
+                    IR_MapToCanvas(x, y, &px, &py);
+                    if (ir_count < IR_TRAIL_MAX_POINTS) {
+                        // 画轨迹：连接前后两个点
+                        if (ir_count > 0) {
+                            LCD_DrawLine(ir_px[ir_count - 1], ir_py[ir_count - 1], px, py);
+                        } else {
+                            TP_Draw_Big_Point(px, py, BLUE);
+                        }
+                        ir_px[ir_count] = px;
+                        ir_py[ir_count] = py;
+                        ir_count++;
                     }
                 }
             }
@@ -111,6 +169,12 @@ static void Display_InfraFollow(void)
     // 重置轨迹缓冲
     ir_count = 0;
 
+    // 重置接收调试信息
+    ir_rx_bytes = 0;
+    ir_rx_lines = 0;
+    ir_rx_last_tick = 0;
+    ir_last_line[0] = '\0';
+
     // 通知小车切换到 IR 跟随模式并启动
     char txbuf[32];
     sprintf(txbuf, "$200,%d#", 0);
@@ -122,6 +186,7 @@ static void InfraFollow_Handle(void)
 {
     // 轮询接收并绘制轨迹
     IR_UartPollAndParse();
+    IR_Debug_DrawRxStatus();
 }
 
 //触控操作

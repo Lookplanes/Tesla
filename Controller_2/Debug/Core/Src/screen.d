@@ -1,4 +1,4 @@
-Core/Src/screen.o: ../Core/Src/screen.c ../Core/Inc/screen.h \
+Core/Src/screen.o: ../Core/Src/screen.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -23,11 +23,10 @@ Core/Src/screen.o: ../Core/Src/screen.c ../Core/Inc/screen.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Core/Inc/lcd.h ../Core/Inc/sys.h ../Core/Inc/key.h \
- ../Core/Inc/touch.h ../Core/Inc/ott2001a.h ../Core/Inc/gt9147.h \
- ../Core/Inc/ft5206.h ../Core/Inc/led.h ../Core/Inc/main.h \
- ../Core/Inc/delay.h ../Core/Inc/route_planning.h
-../Core/Inc/screen.h:
+ ../Core/Inc/screen.h ../Core/Inc/lcd.h ../Core/Inc/sys.h \
+ ../Core/Inc/key.h ../Core/Inc/touch.h ../Core/Inc/ott2001a.h \
+ ../Core/Inc/gt9147.h ../Core/Inc/ft5206.h ../Core/Inc/led.h \
+ ../Core/Inc/main.h ../Core/Inc/delay.h ../Core/Inc/route_planning.h
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:
@@ -52,6 +51,7 @@ Core/Src/screen.o: ../Core/Src/screen.c ../Core/Inc/screen.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
+../Core/Inc/screen.h:
 ../Core/Inc/lcd.h:
 ../Core/Inc/sys.h:
 ../Core/Inc/key.h:

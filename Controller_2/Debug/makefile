@@ -66,8 +66,8 @@ all: main-build
 main-build: demo_for_screen.elf secondary-outputs
 
 # Tool invocations
-demo_for_screen.elf demo_for_screen.map: $(OBJS) $(USER_OBJS) D:\University\ studies\computer\First\ semester\ of\ senior\ year\temp\Controller_2\STM32F103RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "demo_for_screen.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\University studies\computer\First semester of senior year\temp\Controller_2\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="demo_for_screen.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+demo_for_screen.elf demo_for_screen.map: $(OBJS) $(USER_OBJS) D:\University\ studies\computer\First\ semester\ of\ senior\ year\temp\Tesla\Controller_2\STM32F103RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "demo_for_screen.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\University studies\computer\First semester of senior year\temp\Tesla\Controller_2\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="demo_for_screen.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

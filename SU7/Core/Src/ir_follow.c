@@ -91,9 +91,15 @@ static void tx_pose_if_needed(void)
     uint32_t now = HAL_GetTick();
     if ((now - s_last_tx_tick) >= IR_TRACK_TX_INTERVAL_MS) {
         char buf[64];
-        int n = snprintf(buf, sizeof(buf), "$POS,%.2f,%.2f\n", s_state.x_cm, s_state.y_cm);
-        if (n > 0) {
-            HAL_UART_Transmit(&huart2, (uint8_t *)buf, (uint16_t)n, 0xFFFF);
+        // 使用整数协议，避免依赖 printf 的浮点支持：
+        // $POSI,<x_ccm>,<y_ccm>\n 其中 ccm=0.01cm（保留两位小数）
+        float x_scaled = s_state.x_cm * 100.0f;
+        float y_scaled = s_state.y_cm * 100.0f;
+        int32_t x_ccm = (int32_t)((x_scaled >= 0.0f) ? (x_scaled + 0.5f) : (x_scaled - 0.5f));
+        int32_t y_ccm = (int32_t)((y_scaled >= 0.0f) ? (y_scaled + 0.5f) : (y_scaled - 0.5f));
+        int n = snprintf(buf, sizeof(buf), "$POSI,%ld,%ld\n", (long)x_ccm, (long)y_ccm);
+        if (n > 0 && n < (int)sizeof(buf)) {
+            HAL_UART_Transmit(&huart2, (uint8_t *)buf, (uint16_t)n, 100);
         }
         s_last_tx_tick = now;
     }
