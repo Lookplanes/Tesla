@@ -770,30 +770,30 @@ uint8_t set_control_mode(){
     return 0x00;
   }
 }
-uint8_t set_waypoint_mode(){
-  if (SU7Running) {
-    return 0xf1;
-  } else {
-    su7mode = WAYPOINT_MODE;
-    return 0x00;
-  }
-}
-uint8_t set_autopilot_mode(){
-  if (SU7Running) {
-    return 0xf1;
-  } else {
-    su7mode = AUTOPILOT_MODE;
-    return 0x00;
-  }
-}
-uint8_t set_auto_race_mode(){
-  if (SU7Running) {
-    return 0xf1;
-  } else {
-    su7mode = AUTO_RACE_MODE;
-    return 0x00;
-  }
-}
+// uint8_t set_waypoint_mode(){
+//   if (SU7Running) {
+//     return 0xf1;
+//   } else {
+//     su7mode = WAYPOINT_MODE;
+//     return 0x00;
+//   }
+// }
+// uint8_t set_autopilot_mode(){
+//   if (SU7Running) {
+//     return 0xf1;
+//   } else {
+//     su7mode = AUTOPILOT_MODE;
+//     return 0x00;
+//   }
+// }
+// uint8_t set_auto_race_mode(){
+//   if (SU7Running) {
+//     return 0xf1;
+//   } else {
+//     su7mode = AUTO_RACE_MODE;
+//     return 0x00;
+//   }
+// }
 uint8_t set_ir_follow_mode(){
   if (SU7Running) {
     return 0xf1;

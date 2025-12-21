@@ -15,11 +15,13 @@
 #endif
 
 // ============ 轨迹缓冲配置 ============
-#define IR_TRAIL_MAX_POINTS 400
+#define IR_TRAIL_MAX_POINTS 800
 #define MINE_DISTANCE_CM 0.5f
 
 // ============ 初始显示范围 ============
 #define AREA_INIT_SIZE_CM 200.0f
+
+#define MAX_EXEED_SIZE_CM 10.0f
 
 // ============ 公共接口函数 ============
 

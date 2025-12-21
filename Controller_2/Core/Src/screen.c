@@ -111,8 +111,8 @@ void rtp_test(void)
                             }
                             break;
                     case 2: // infrared follow
-                            // Menu 按钮区域
-                            if(tp_dev.x[0] >= 20 && tp_dev.x[0] <= 140 && tp_dev.y[0] >= 280 && tp_dev.y[0] <= 304) {
+                            if(tp_dev.x[0] >= 170 && tp_dev.x[0] <= 250 &&
+                               tp_dev.y[0] >= 5   && tp_dev.y[0] <= 35) {
                                 mode = 0;
                                 IR_Follow_Stop();
                                 Display_ShowMainMenu();
@@ -145,12 +145,12 @@ void rtp_test(void)
 // 显示连接状态
 void Display_ConnectionStatus(uint8_t connected)
 {
-    LCD_Fill(10, 10, 210, 26, CYAN); // 210=10+200, 26=10+16
+    LCD_Fill(10, 10, 160, 26, CYAN);
     POINT_COLOR = BLUE;
     if (connected)
-        LCD_ShowString(10, 10, 200, 16, 16, (uint8_t*)"connected");
+        LCD_ShowString(10, 10, 150, 16, 16, (uint8_t*)"connected");
     else
-        LCD_ShowString(10, 10, 200, 16, 16, (uint8_t*)"connecting...");
+        LCD_ShowString(10, 10, 150, 16, 16, (uint8_t*)"connecting...");
 }
 
 // 显示主菜单

@@ -38,9 +38,9 @@ extern "C" {
 /* USER CODE BEGIN ET */
 typedef enum {
   CONTROL_MODE,
-  WAYPOINT_MODE,
-  AUTOPILOT_MODE,
-  AUTO_RACE_MODE,
+  // WAYPOINT_MODE,
+  // AUTOPILOT_MODE,
+  // AUTO_RACE_MODE,
   IR_FOLLOW_MODE
 } SU7Mode_t;
 extern SU7Mode_t su7mode;
@@ -69,9 +69,9 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 uint8_t set_control_mode();
-uint8_t set_waypoint_mode();
-uint8_t set_autopilot_mode();
-uint8_t set_auto_race_mode();
+// uint8_t set_waypoint_mode();
+// uint8_t set_autopilot_mode();
+// uint8_t set_auto_race_mode();
 uint8_t set_ir_follow_mode();
 void start_mode();
 void end_mode();

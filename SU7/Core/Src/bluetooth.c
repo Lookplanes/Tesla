@@ -6,7 +6,7 @@
 #include "scene.h"
 #include "sonic.h"
 
-extern uint8_t rx_data; // 使用 main.c 中定义的 rx_data，和 stm32f1xx_it.c 保持一致
+extern uint8_t rx_data;
 
 void set_bluetooth_huart(UART_HandleTypeDef *h) { huart = h; }
 
@@ -56,22 +56,22 @@ void bluetooth_RxCallback()
         bluetooth_sendACK2(set_control_mode());
         start_bluetooth_IT();
         break;
-    case 0x02:
-        bluetooth_sendACK2(set_waypoint_mode());
-        start_bluetooth_IT();
-        break;
-    case 0x03:
-        bluetooth_sendACK2(set_autopilot_mode());
-        start_bluetooth_IT();
-        break;
-    case 0x04:
-        bluetooth_sendACK2(set_auto_race_mode());
-        start_bluetooth_IT();
-        break;
-    case 0x07: // set IR follow mode
-        bluetooth_sendACK2(set_ir_follow_mode());
-        start_bluetooth_IT();
-        break;
+    // case 0x02:
+    //     bluetooth_sendACK2(set_waypoint_mode());
+    //     start_bluetooth_IT();
+    //     break;
+    // case 0x03:
+    //     bluetooth_sendACK2(set_autopilot_mode());
+    //     start_bluetooth_IT();
+    //     break;
+    // case 0x04:
+    //     bluetooth_sendACK2(set_auto_race_mode());
+    //     start_bluetooth_IT();
+    //     break;
+    // case 0x07: // set IR follow mode
+    //     bluetooth_sendACK2(set_ir_follow_mode());
+    //     start_bluetooth_IT();
+    //     break;
     case 0x05: // start current mode
         start_mode();
         bluetooth_sendACK2(0x00);

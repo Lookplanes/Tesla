@@ -299,52 +299,52 @@ float UltrasonicWave_Distance; // in centimeter(maybe)
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
   switch (GPIO_Pin)
   {
-  case KEY1_Pin:
-    HAL_Delay(50);
-    if(HAL_GPIO_ReadPin(KEY1_GPIO_Port, KEY1_Pin) == GPIO_PIN_RESET){
-      set_autopilot_position((Waypoint){0, 0}, (Waypoint){3, 3});
-      set_autopilot_mode();
-      toggle_mode();
-    }
-    while(HAL_GPIO_ReadPin(KEY1_GPIO_Port, KEY1_Pin) == GPIO_PIN_RESET)
-      ;
-    HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
-    break;
-  case KEY2_Pin:
-    HAL_Delay(50);
-    if(HAL_GPIO_ReadPin(KEY2_GPIO_Port, KEY2_Pin) == GPIO_PIN_RESET){
-      set_auto_race_mode();
-      toggle_mode();
-    }
-    while(HAL_GPIO_ReadPin(KEY2_GPIO_Port, KEY2_Pin) == GPIO_PIN_RESET)
-      ;
-    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
-    break;
-  case KEY3_Pin:
-    HAL_Delay(50);
-    if(HAL_GPIO_ReadPin(KEY3_GPIO_Port, KEY3_Pin) == GPIO_PIN_SET){
-      runInitialCalibration();
-    }
-    while(HAL_GPIO_ReadPin(KEY3_GPIO_Port, KEY3_Pin) == GPIO_PIN_SET){
-    }
-    break;
+  // case KEY1_Pin:
+  //   HAL_Delay(50);
+  //   if(HAL_GPIO_ReadPin(KEY1_GPIO_Port, KEY1_Pin) == GPIO_PIN_RESET){
+  //     set_autopilot_position((Waypoint){0, 0}, (Waypoint){3, 3});
+  //     set_autopilot_mode();
+  //     toggle_mode();
+  //   }
+  //   while(HAL_GPIO_ReadPin(KEY1_GPIO_Port, KEY1_Pin) == GPIO_PIN_RESET)
+  //     ;
+  //   HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
+  //   break;
+  // case KEY2_Pin:
+  //   HAL_Delay(50);
+  //   if(HAL_GPIO_ReadPin(KEY2_GPIO_Port, KEY2_Pin) == GPIO_PIN_RESET){
+  //     set_auto_race_mode();
+  //     toggle_mode();
+  //   }
+  //   while(HAL_GPIO_ReadPin(KEY2_GPIO_Port, KEY2_Pin) == GPIO_PIN_RESET)
+  //     ;
+  //   HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+  //   break;
+  // case KEY3_Pin:
+  //   HAL_Delay(50);
+  //   if(HAL_GPIO_ReadPin(KEY3_GPIO_Port, KEY3_Pin) == GPIO_PIN_SET){
+  //     runInitialCalibration();
+  //   }
+  //   while(HAL_GPIO_ReadPin(KEY3_GPIO_Port, KEY3_Pin) == GPIO_PIN_SET){
+  //   }
+  //   break;
   
-  case SONIC_WAVE_RECV_Pin:
-    HAL_Delay_us(10); // wait sonic module send sonic pulse
-    __HAL_TIM_SetCounter(&htim2, 0);
-    HAL_TIM_Base_Start(&htim2);
-    uint32_t cnt = 0;
-    while((__HAL_TIM_GetCounter(&htim2) < 4900)){
-      if (HAL_GPIO_ReadPin(SONIC_WAVE_RECV_GPIO_Port, SONIC_WAVE_RECV_Pin)) {
-        cnt = __HAL_TIM_GetCounter(&htim2);
-      } else if (__HAL_TIM_GetCounter(&htim2) - cnt >= 10) {
-        break;
-      }
-    }
-    HAL_TIM_Base_Stop(&htim2);
-    UltrasonicWave_Distance = cnt * 340 / 200.0;
-  default:
-    break;
+  // case SONIC_WAVE_RECV_Pin:
+  //   HAL_Delay_us(10); // wait sonic module send sonic pulse
+  //   __HAL_TIM_SetCounter(&htim2, 0);
+  //   HAL_TIM_Base_Start(&htim2);
+  //   uint32_t cnt = 0;
+  //   while((__HAL_TIM_GetCounter(&htim2) < 4900)){
+  //     if (HAL_GPIO_ReadPin(SONIC_WAVE_RECV_GPIO_Port, SONIC_WAVE_RECV_Pin)) {
+  //       cnt = __HAL_TIM_GetCounter(&htim2);
+  //     } else if (__HAL_TIM_GetCounter(&htim2) - cnt >= 10) {
+  //       break;
+  //     }
+  //   }
+  //   HAL_TIM_Base_Stop(&htim2);
+  //   UltrasonicWave_Distance = cnt * 340 / 200.0;
+  // default:
+  //   break;
   }
 }
 

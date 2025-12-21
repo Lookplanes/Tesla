@@ -16,7 +16,6 @@
 #endif
 
 //=== 与 motor 参数联动的物理量推导 ===
-// 说明：
 // - motor.c 以占空比 MOTOR_SPEED（%）驱动时，直行速度约为：V_base = 100 / K_FORWARD_TIME（cm/s）
 // - 近似线性假设下，100% 占空比的最大速度约：V_max = V_base * (100 / MOTOR_SPEED)
 // - 原 IR 跟随模块用 MAX_SPEED_CM_S 作为 100% 对应的线速度，用它按百分比线性缩放
@@ -41,7 +40,7 @@
 #endif
 
 // 100% 占空比对应的最大线速度（cm/s）
-// π 常量（避免依赖非标准 M_PI）
+// π 常量
 #ifndef IR_PI
 #define IR_PI 3.14159265358979323846f
 #endif

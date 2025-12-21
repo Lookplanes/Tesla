@@ -16,7 +16,7 @@ static float world_min_x = 0.0f;
 static float world_min_y = 0.0f;
 
 
-// 轨迹缓冲：同时保存世界坐标和像素坐标
+// 轨迹缓冲：同时保存世界坐标
 static float ir_x_cm[IR_TRAIL_MAX_POINTS];
 static float ir_y_cm[IR_TRAIL_MAX_POINTS];
 // static uint16_t ir_px[IR_TRAIL_MAX_POINTS];
@@ -81,8 +81,10 @@ static int IR_EnsureWorldContains(float x, float y)
     float world_max_x = world_min_x + world_size_cm;
     float world_max_y = world_min_y + world_size_cm;
     
-    // 检查点是否在当前视窗外
-    while (x < world_min_x || x > world_max_x || y < world_min_y || y > world_max_y) {
+    // 检查点是否在当前视窗外 (加上 MAX_EXEED_SIZE_CM 作为缓冲)
+    // while (x < world_min_x || x > world_max_x || y < world_min_y || y > world_max_y) {
+    while (x < (world_min_x - MAX_EXEED_SIZE_CM) || x > (world_max_x + MAX_EXEED_SIZE_CM) ||
+           y < (world_min_y - MAX_EXEED_SIZE_CM) || y > (world_max_y + MAX_EXEED_SIZE_CM)) {
         // 需要扩展，先翻倍 world_size_cm
         float current_world_center_x = world_min_x + world_size_cm / 2.0f;
         float current_world_center_y = world_min_y + world_size_cm / 2.0f;
@@ -275,7 +277,7 @@ void IR_Follow_Display(void)
     // 提示与按钮
     POINT_COLOR = BLUE;
 
-    LCD_ShowString(220, 10, 100, 24, 24, (uint8_t*)"Menu");
+    LCD_ShowString(190, 10, 100, 24, 24, (uint8_t*)"Menu");
     POINT_COLOR = BLACK;
 
     // 初始化红外跟随系统
